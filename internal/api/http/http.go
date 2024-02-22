@@ -16,7 +16,6 @@ import (
 // Server - основной объект HTTP API сервера
 type Server struct {
 	router        *mux.Router
-	service       deposit.DepositServicer
 	httpSrv       *http.Server
 	shutdownState bool
 }
@@ -24,8 +23,7 @@ type Server struct {
 // Init - функция инициализирует и возвращает HTTP API сервер
 func Init(opt *options.Options, depositService deposit.DepositServicer) *Server {
 	s := &Server{
-		router:  mux.NewRouter(),
-		service: depositService,
+		router: mux.NewRouter(),
 	}
 
 	//ручка сервиса расчета депозита
