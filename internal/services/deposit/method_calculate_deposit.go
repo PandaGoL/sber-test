@@ -9,7 +9,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//go:generate mockery --name=DepositServicer
 type DepositServicer interface {
 	CalculateDeposit(requestId string, req *types.DepositeRequest) ([]byte, error)
 }
