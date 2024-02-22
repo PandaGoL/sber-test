@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sber-test/internal/services/deposit/types"
 	"sber-test/pkg/utils"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -42,10 +44,10 @@ func calculateDeposit(req *types.DepositeRequest) []byte {
 		tmpAmont = calcAmount(tmpAmont, req.Rate)
 		period := utils.AddMonth(startPeriod, i)
 		if i < req.Periods-1 {
-			str += fmt.Sprintf("\"%s\": %v,", period.Format(types.Layout), utils.RoundFloat(float64(tmpAmont), 2))
+			str += fmt.Sprintf("\"%s\": %v,", period.Format(types.Layout), convertFloatToRes(utils.RoundFloat(float64(tmpAmont), 2)))
 		}
 		if i == req.Periods-1 {
-			str += fmt.Sprintf("\"%s\": %v}", period.Format(types.Layout), utils.RoundFloat(float64(tmpAmont), 2))
+			str += fmt.Sprintf("\"%s\": %v}", period.Format(types.Layout), convertFloatToRes(utils.RoundFloat(float64(tmpAmont), 2)))
 		}
 	}
 
@@ -54,4 +56,13 @@ func calculateDeposit(req *types.DepositeRequest) []byte {
 
 func calcAmount(amount float64, rate float64) float64 {
 	return amount * (1 + rate/12/100)
+}
+
+func convertFloatToRes(f float64) string {
+	res := strconv.FormatFloat(f, 'f', 2, 64)
+	tmp := strings.Split(res, ".")
+	if tmp[1] == "00" {
+		return tmp[0]
+	}
+	return res
 }
